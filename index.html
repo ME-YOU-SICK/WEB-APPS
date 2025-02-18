@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Tools Web App</title>
+</head>
+<body>
+
+<h1>Media Tools</h1>
+
+<div>
+    <h2>Audio Tools</h2>
+    <button id="recordAudio">Record Audio</button>
+    <button id="stopAudio">Stop Recording</button>
+    <audio id="audioPlayer" controls></audio>
+</div>
+
+<div>
+    <h2>Image Tools</h2>
+    <input type="file" id="imageInput" accept="image/*">
+    <button id="grayscale">Convert to Grayscale</button>
+    <br>
+    <canvas id="imageCanvas" width="300" height="300"></canvas>
+</div>
+
+<div>
+    <h2>Video Tools</h2>
+    <button id="startVideo">Start Video</button>
+    <button id="stopVideo">Stop Video</button>
+    <video id="videoPlayer" width="300" height="200" controls></video>
+</div>
+
+<script>
+    // Audio Recording
+    let audioContext, audioRecorder, chunks = [];
+
+    document.getElementById('recordAudio').addEventListener('click', function() {
+        navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(stream => {
+            audioContext = new AudioContext();
+            let source = audioContext.createMediaStreamSource(stream);
+            audioRecorder = new MediaRecorder(stream);
+            audioRecorder.ondataavailable = e => chunks.push(e.data);
+            audioRecorder.onstop = exportData;
+            audioRecorder.start();
+        });
+    });
+
+    document.getElementById('stopAudio').addEventListener('click', function() {
+        if (audioRecorder && audioRecorder.state === "recording") {
+            audioRecorder.stop();
+        }
+    });
+
+    function exportData() {
+        let blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
+        let audioURL = URL.createObjectURL(blob);
+        document.getElementById('audioPlayer').src = audioURL;
+        chunks = [];
+    }
+
+    // Image Processing (Grayscale Conversion)
+    document.getElementById('imageInput').addEventListener('change', function(e) {
+        let img = new Image();
+        img.onload = function() {
+            let canvas = document.getElementById('imageCanvas');
+            let ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        }
+        img.src = URL.createObjectURL(e.target.files[0]);
+    });
+
+    document.getElementById('grayscale').addEventListener('click', function() {
+        let canvas = document.getElementById('imageCanvas');
+        let ctx = canvas.getContext('2d');
+        let imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < imgData.data.length; i += 4) {
+            let avg = (imgData.data[i] + imgData.data[i + 1] + imgData.data[i + 2]) / 3;
+            imgData.data[i] = avg; // red
+            imgData.data[i + 1] = avg; // green
+            imgData.data[i + 2] = avg; // blue
+        }
+        ctx.putImageData(imgData, 0, 0);
+    });
+
+    // Video Streaming
+    document.getElementById('startVideo').addEventListener('click', function() {
+        navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+            document.getElementById('videoPlayer').srcObject = stream;
+        });
+    });
+
+    document.getElementById('stopVideo').addEventListener('click', function() {
+        let stream = document.getElementById('videoPlayer').srcObject;
+        stream.getTracks().forEach(track => track.stop());
+        document.getElementById('videoPlayer').srcObject = null;
+    });
+</script>
+
+</body>
+</html>
