@@ -1,103 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Media Tools Web App</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Web App Toolkit</title>
+  <meta name="description" content="A modern collection of useful online tools for audio, image, video, documents, and utility functions." />
+  <link rel="stylesheet" href="style.css" />
+  <!-- External Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jsbarcode/3.11.5/JsBarcode.all.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.js"></script>
 </head>
 <body>
+  <header>
+    <div class="container">
+      <h1>Web App Toolkit</h1>
+      <p>A collection of modern online tools for all your digital needs.</p>
+    </div>
+  </header>
 
-<h1>Media Tools</h1>
+  <main class="container">
+    <!-- Audio Tools Section -->
+    <section id="audio-tools">
+      <h2>Audio Tools</h2>
+      <div class="tool-grid">
+        <a href="#" data-tool="audio-recorder">Audio Recorder</a>
+        <a href="#" data-tool="audio-speed-changer">Audio Speed Changer</a>
+        <a href="#" data-tool="audio-cutter">Audio Cutter</a>
+        <a href="#" data-tool="audio-joiner">Audio Joiner</a>
+        <a href="#" data-tool="audio-converter">Audio Converter (to WAV)</a>
+        <a href="#" data-tool="audio-equalizer">Audio Equalizer</a>
+        <a href="#" data-tool="audio-normalizer">Audio Normalizer</a>
+        <a href="#" data-tool="audio-channel-splitter">Audio Channel Splitter</a>
+      </div>
+      <div class="tool-display"></div>
+    </section>
 
-<div>
-    <h2>Audio Tools</h2>
-    <button id="recordAudio">Record Audio</button>
-    <button id="stopAudio">Stop Recording</button>
-    <audio id="audioPlayer" controls></audio>
-</div>
+    <!-- Image Tools Section -->
+    <section id="image-tools">
+      <h2>Image Tools</h2>
+      <div class="tool-grid">
+        <a href="#" data-tool="image-cropper">Image Cropper</a>
+        <a href="#" data-tool="image-resizer">Image Resizer</a>
+        <a href="#" data-tool="image-compressor">Image Compressor</a>
+        <a href="#" data-tool="image-format-converter">Image Format Converter</a>
+        <a href="#" data-tool="image-rotator">Image Rotator</a>
+        <a href="#" data-tool="image-watermark-adder">Image Watermark Adder</a>
+        <a href="#" data-tool="image-color-inverter">Image Color Inverter</a>
+        <a href="#" data-tool="qr-code-generator">QR Code Generator</a>
+        <a href="#" data-tool="image-pixelator">Image Pixelator</a>
+        <a href="#" data-tool="image-filter-effects">Image Filter & Effects</a>
+        <a href="#" data-tool="image-background-remover">Image Background Remover</a>
+        <a href="#" data-tool="image-denoiser">Image Denoiser</a>
+        <a href="#" data-tool="image-enhancer">Image Enhancer</a>
+        <a href="#" data-tool="image-metadata-viewer">Image Metadata Viewer</a>
+        <a href="#" data-tool="image-batch-processor">Image Batch Processor</a>
+        <a href="#" data-tool="image-collage-maker">Image Collage Maker</a>
+        <a href="#" data-tool="image-overlay-tool">Image Overlay Tool</a>
+      </div>
+      <div class="tool-display"></div>
+    </section>
 
-<div>
-    <h2>Image Tools</h2>
-    <input type="file" id="imageInput" accept="image/*">
-    <button id="grayscale">Convert to Grayscale</button>
-    <br>
-    <canvas id="imageCanvas" width="300" height="300"></canvas>
-</div>
+    <!-- Video Tools Section -->
+    <section id="video-tools">
+      <h2>Video Tools</h2>
+      <div class="tool-grid">
+        <a href="#" data-tool="video-speed-changer">Video Speed Changer</a>
+        <a href="#" data-tool="frame-extractor">Frame Extractor</a>
+      </div>
+      <div class="tool-display"></div>
+    </section>
 
-<div>
-    <h2>Video Tools</h2>
-    <button id="startVideo">Start Video</button>
-    <button id="stopVideo">Stop Video</button>
-    <video id="videoPlayer" width="300" height="200" controls></video>
-</div>
+    <!-- Document Tools Section -->
+    <section id="document-tools">
+      <h2>Document Tools</h2>
+      <div class="tool-grid">
+        <a href="#" data-tool="text-to-pdf-converter">Text to PDF Converter</a>
+      </div>
+      <div class="tool-display"></div>
+    </section>
 
-<script>
-    // Audio Recording
-    let audioContext, audioRecorder, chunks = [];
+    <!-- Utility Tools Section -->
+    <section id="utility-tools">
+      <h2>Utility Tools</h2>
+      <div class="tool-grid">
+        <a href="#" data-tool="barcode-generator">Barcode Generator</a>
+        <a href="#" data-tool="morse-code-converter">Morse Code Converter</a>
+        <a href="#" data-tool="random-number-generator">Random Number Generator</a>
+        <a href="#" data-tool="text-encryptor-decryptor">Text Encryptor & Decryptor</a>
+        <a href="#" data-tool="uuid-generator">UUID Generator</a>
+        <a href="#" data-tool="character-counter">Character Counter</a>
+      </div>
+      <div class="tool-display"></div>
+    </section>
+  </main>
 
-    document.getElementById('recordAudio').addEventListener('click', function() {
-        navigator.mediaDevices.getUserMedia({ audio: true })
-        .then(stream => {
-            audioContext = new AudioContext();
-            let source = audioContext.createMediaStreamSource(stream);
-            audioRecorder = new MediaRecorder(stream);
-            audioRecorder.ondataavailable = e => chunks.push(e.data);
-            audioRecorder.onstop = exportData;
-            audioRecorder.start();
-        });
-    });
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 Web App Toolkit. All rights reserved.</p>
+    </div>
+  </footer>
 
-    document.getElementById('stopAudio').addEventListener('click', function() {
-        if (audioRecorder && audioRecorder.state === "recording") {
-            audioRecorder.stop();
-        }
-    });
-
-    function exportData() {
-        let blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
-        let audioURL = URL.createObjectURL(blob);
-        document.getElementById('audioPlayer').src = audioURL;
-        chunks = [];
-    }
-
-    // Image Processing (Grayscale Conversion)
-    document.getElementById('imageInput').addEventListener('change', function(e) {
-        let img = new Image();
-        img.onload = function() {
-            let canvas = document.getElementById('imageCanvas');
-            let ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        }
-        img.src = URL.createObjectURL(e.target.files[0]);
-    });
-
-    document.getElementById('grayscale').addEventListener('click', function() {
-        let canvas = document.getElementById('imageCanvas');
-        let ctx = canvas.getContext('2d');
-        let imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        for (let i = 0; i < imgData.data.length; i += 4) {
-            let avg = (imgData.data[i] + imgData.data[i + 1] + imgData.data[i + 2]) / 3;
-            imgData.data[i] = avg; // red
-            imgData.data[i + 1] = avg; // green
-            imgData.data[i + 2] = avg; // blue
-        }
-        ctx.putImageData(imgData, 0, 0);
-    });
-
-    // Video Streaming
-    document.getElementById('startVideo').addEventListener('click', function() {
-        navigator.mediaDevices.getUserMedia({ video: true })
-        .then(stream => {
-            document.getElementById('videoPlayer').srcObject = stream;
-        });
-    });
-
-    document.getElementById('stopVideo').addEventListener('click', function() {
-        let stream = document.getElementById('videoPlayer').srcObject;
-        stream.getTracks().forEach(track => track.stop());
-        document.getElementById('videoPlayer').srcObject = null;
-    });
-</script>
-
+  <script src="script.js"></script>
 </body>
 </html>
